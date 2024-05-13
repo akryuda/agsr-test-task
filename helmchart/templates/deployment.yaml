@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chart.name" . }}
+  namespace: {{ include "chart.name" . }}
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "chart.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ include "chart.name" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: {{ .Values.service.port }}
+        env:
+        - name: message
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "chart.name" . }}
+              key: message
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.service.port }}
+          failureThreshold: 1
+          periodSeconds: 10
+
+        startupProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.service.port }}
+          failureThreshold: 30
+          periodSeconds: 10
+

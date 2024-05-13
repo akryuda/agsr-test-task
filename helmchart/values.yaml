@@ -1,0 +1,9 @@
+replicaCount: 3
+
+image:
+  repository: akryuda/agsr_test_task
+
+service:
+  type: LoadBalancer
+  port: 3000
+  nodePort: 30001

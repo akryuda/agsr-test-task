@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agsr-test-task-deployment
+  namespace: agsr-test-task-namespace
+  labels:
+    app: agsr-test-task
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: agsr-test-task
+  template:
+    metadata:
+      labels:
+        app: agsr-test-task
+    spec:
+      containers:
+      - name: agsr-test-task
+        image: akryuda/agsr_test_task
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
+        env:
+        - name: message
+          valueFrom:
+            configMapKeyRef:
+              name: agsr-test-task-configmap
+              key: message
+

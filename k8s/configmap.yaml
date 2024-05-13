@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agsr-test-task-configmap
+  namespace: agsr-test-task-namespace
+  labels:
+    app: agsr-test-task
+data:
+  message: "AGSR test task"
